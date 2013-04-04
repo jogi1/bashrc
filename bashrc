@@ -62,12 +62,12 @@ function parse_git_branch {
 	GB=`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	#GO=`git remote show origin  2> /dev/null|grep Fetch |sed -e 's/Fetch URL: \(.*\)/\1/'`
 	GO=""
-	GSTATUS=`git status 2> /dev/null`
-	GMODIFIED=`echo $GSTATUS | grep modified|wc -l`
+	#GSTATUS=`git status 2> /dev/null`
+	GMODIFIED=`git status 2> /dev/null | grep "modified:"|grep -v untracked |wc -l`
 	GMODIFIED=" \xe2\x9d\x8d"$GMODIFIED
-	GNEW=`echo $GSTATUS |grep "new file"|wc -l`
+	GNEW=`git status 2> /dev/null |grep "new file"|wc -l`
 	GNEW=" \xe2\x9c\xb7"$GNEW
-	GDELETED=`echo $GSTATUS |grep "deleted"|wc -l`
+	GDELETED=`git satatus 2> /dev/null |grep "deleted"|wc -l`
 	GDELETED=" \xe2\x9c\x9d"$GDELETED
 	#GMODIFIED=""
 	#GNEW=""
