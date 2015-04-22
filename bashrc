@@ -58,6 +58,24 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+function get_vim_server_name {
+    CURRENT_GIT_BRANCH=`git rev-parse --abbrev-ref HEAD 2> /dev/null`
+
+    if [ -z $CURRENT_GIT_BRANCH ]; then
+        VIM_SERVER='default'
+    else
+        CURRENT_GIT_BRANCH_BASE_NAME=`git rev-parse --show-toplevel`
+        CURRENT_GIT_BRANCH_BASE_NAME=`basename $CURRENT_GIT_BRANCH_BASE_NAME`
+        VIM_SERVER=$CURRENT_GIT_BRANCH_BASE_NAME$CURRENT_GIT_BRANCH
+    fi
+    echo -en $VIM_SERVER
+}
+
+function V {
+    VIM_SERVER=$(get_vim_server_name)
+    gvim --servername $VIM_SERVER --remote_silent $@
+}
+
 function parse_git_branch {
 	GB=`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	#GO=`git remote show origin  2> /dev/null|grep Fetch |sed -e 's/Fetch URL: \(.*\)/\1/'`
@@ -134,3 +152,5 @@ fi
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
+
+source ~/.bashrc_local
